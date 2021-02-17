@@ -1,4 +1,4 @@
-package com.devsuperior.dslean.entities;
+package com.devsuperior.dslearn.entities;
 
 import java.io.Serializable;
 import java.time.Instant;

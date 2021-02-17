@@ -1,40 +1,53 @@
-package com.devsuperior.dslean.entities;
+package com.devsuperior.dslearn.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tb_course")
-public class Course implements Serializable {
+@Table(name = "tb_user")
+public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	private String imgUri;
-	private String imgGrayUri;
+	private String email;
+	private String password;
 	
-	@OneToMany(mappedBy = "course")
-	private List<Offer> offers = new ArrayList<>();
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "tb_user_role",
+			joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>();
 	
-	public Course() {
+	@OneToMany(mappedBy = "user")
+	private List<Notification> notifications = new ArrayList<>();
+
+	
+	public User() {
 	}
 
-	public Course(Long id, String name, String imgUri, String imgGrayUri) {
+	public User(Long id, String name, String email, String password) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.imgUri = imgUri;
-		this.imgGrayUri = imgGrayUri;
+		this.email = email;
+		this.password = password;
 	}
 
 	public Long getId() {
@@ -53,24 +66,28 @@ public class Course implements Serializable {
 		this.name = name;
 	}
 
-	public String getImgUri() {
-		return imgUri;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setImgUri(String imgUri) {
-		this.imgUri = imgUri;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public String getImgGrayUri() {
-		return imgGrayUri;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setImgGrayUri(String imgGrayUri) {
-		this.imgGrayUri = imgGrayUri;
+	public void setPassword(String password) {
+		this.password = password;
 	}
-	
-	public List<Offer> getOffers() {
-		return offers;
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public List<Notification> getNotifications() {
+		return notifications;
 	}
 
 	@Override
@@ -89,7 +106,7 @@ public class Course implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Course other = (Course) obj;
+		User other = (User) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
